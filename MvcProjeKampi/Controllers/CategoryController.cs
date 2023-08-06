@@ -34,9 +34,34 @@ namespace MvcProjeKampi.Controllers
             //cm.CategoryAddBL(p);
             CategoryValidator categoryValidator = new CategoryValidator();
             ValidationResult result = categoryValidator.Validate(p);
+
             if (result.IsValid)
             {
                 cm.CategoryAdd(p);
+                return RedirectToAction("GetCategoryList");
+            }
+            else
+            {
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorCode);
+                }
+            }
+            return View();
+        }
+        [HttpGet]
+        public ActionResult UpdateCategory(int id)
+        {
+            var result = cm.GetByID(id);
+            return View(result);
+        }
+        public ActionResult UpdateCategory(Category category)
+        {
+            CategoryValidator categoryValidator = new CategoryValidator();
+            ValidationResult result = categoryValidator.Validate(category);
+            if (result.IsValid)
+            {
+                cm.CategoryUpdate(category);
                 return RedirectToAction("GetCategoryList");
             }
             else

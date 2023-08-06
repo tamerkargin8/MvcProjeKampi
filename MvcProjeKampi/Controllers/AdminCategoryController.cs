@@ -13,10 +13,10 @@ namespace MvcProjeKampi.Controllers
 {
     public class AdminCategoryController : Controller
     {
-        CategoryManager cm = new CategoryManager(new EfCategoryDal());
+        CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
         public ActionResult Index()
         {
-            var categoryValues = cm.GetCategoryList();
+            var categoryValues = categoryManager.GetCategoryList();
             return View(categoryValues);
         }
         [HttpGet]
@@ -24,13 +24,13 @@ namespace MvcProjeKampi.Controllers
         {
             return View();
         }
-        public ActionResult AddCategory(Category p)
+        public ActionResult AddCategory(Category category)
         {
             CategoryValidator categoryValidator = new CategoryValidator();
-            ValidationResult result = categoryValidator.Validate(p);
+            ValidationResult result = categoryValidator.Validate(category);
             if (result.IsValid)
             {
-                cm.CategoryAdd(p);
+                categoryManager.CategoryAdd(category);
                 return RedirectToAction("Index");
             }
             else
@@ -45,20 +45,20 @@ namespace MvcProjeKampi.Controllers
 
         public ActionResult DeleteCategory(int id)
         {
-            var categoryValue = cm.GetByID(id);
-            cm.CategoryDelete(categoryValue);
+            var categoryValue = categoryManager.GetByID(id);
+            categoryManager.CategoryDelete(categoryValue);
             return RedirectToAction("Index");
         }
         [HttpGet]
         public ActionResult UpdateCategory(int id)
         {
-            var categoryValue = cm.GetByID(id);
-            return View(categoryValue);
+            var result = categoryManager.GetByID(id);
+            return View(result);
         }        
         [HttpPost]
-        public ActionResult UpdateCategory(Category c)
+        public ActionResult UpdateCategory(Category category)
         {
-            cm.CategoryUpdate(c);
+            categoryManager.CategoryUpdate(category);
             return RedirectToAction("Index");
         }
     }
